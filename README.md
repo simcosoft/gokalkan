@@ -5,6 +5,8 @@
 
 <img src="https://user-images.githubusercontent.com/29381624/170255957-56b2c349-c04f-4ec8-9054-78bbe351fcc8.png" width=100>
 
+Данный репо является форком от github.com/gokalkan/gokalkan
+
 Пакет `gokalkan` является оберткой над нативными методами библиотеки KalkanCrypt.
 
 KalkanCrypt является основной библиотекой для работы с ЭЦП ключами от pki.gov.kz и
