@@ -29,6 +29,18 @@ func (cli *Client) Sign(data []byte, isDetached, withTSP bool) (signature []byte
 	return base64.StdEncoding.DecodeString(signatureB64)
 }
 
+// Sign подписывает данные и возвращает CMS с подписью.
+func (cli *Client) SignWithFlags(data []byte, flags ckalkan.Flag) (signature []byte, err error) {
+	dataB64 := base64.StdEncoding.EncodeToString(data)
+
+	signatureB64, err := cli.kc.SignData("", dataB64, "", flags)
+	if err != nil {
+		return nil, err
+	}
+
+	return base64.StdEncoding.DecodeString(signatureB64)
+}
+
 // SignXML подписывает данные в формате XML.
 func (cli *Client) SignXML(xmlData string) (string, error) {
 	return cli.kc.SignXML(xmlData, "", 0, "", "", "")
