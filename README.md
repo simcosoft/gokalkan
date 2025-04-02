@@ -45,7 +45,7 @@ sudo cp -f libkalkancryptwr-64.so.2.0.4 /usr/lib/libkalkancryptwr-64.so
 Версия Go 1.17+
 
 ```sh
-go get github.com/gokalkan/gokalkan
+go get github.com/simcosoft/gokalkan
 ```
 
 ## Загрузка хранилища PKCS12
@@ -59,7 +59,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gokalkan/gokalkan"
+	"github.com/simcosoft/gokalkan"
 )
 
 var (

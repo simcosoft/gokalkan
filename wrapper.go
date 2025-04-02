@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/gokalkan/gokalkan/ckalkan"
+	"github.com/simcosoft/gokalkan/ckalkan"
 )
 
 // Kalkan - это обертка над методами KalkanCrypt.

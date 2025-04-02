@@ -3,7 +3,7 @@ package gokalkan
 import (
 	"crypto/x509"
 
-	"github.com/gokalkan/gokalkan/ckalkan"
+	"github.com/simcosoft/gokalkan/ckalkan"
 )
 
 func (cli *Client) Options() Options {

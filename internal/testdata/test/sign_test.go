@@ -3,8 +3,8 @@ package test
 import (
 	"testing"
 
-	"github.com/gokalkan/gokalkan"
-	"github.com/gokalkan/gokalkan/ckalkan"
+	"github.com/simcosoft/gokalkan"
+	"github.com/simcosoft/gokalkan/ckalkan"
 )
 
 func TestSignData(t *testing.T) {
