@@ -1,9 +1,10 @@
 package gokalkan
 
 import (
-	"github.com/gokalkan/gokalkan/ckalkan"
 	"strings"
 	"time"
+
+	"github.com/simcosoft/gokalkan/ckalkan"
 )
 
 // see: https://adilet.zan.kz/rus/docs/V2000021440

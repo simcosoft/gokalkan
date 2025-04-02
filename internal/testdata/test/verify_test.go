@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/gokalkan/gokalkan/ckalkan"
+	"github.com/simcosoft/gokalkan/ckalkan"
 )
 
 func TestX509ValidateCertificateNothing(t *testing.T) {
