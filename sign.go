@@ -36,12 +36,12 @@ func (cli *Client) SignWithFlags(data []byte, flags ckalkan.Flag) (signature []b
 
 	signatureB64, err := cli.kc.SignData("", dataB64, "", flags)
 	if err != nil {
-		return nil, "", err
+		return nil, "-", err
 	}
 
 	c, err := cli.kc.GetCertificatesList()
 	if err != nil {
-		return nil, "", err
+		return nil, "-", err
 	}
 
 	return []byte(signatureB64), c, nil
