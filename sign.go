@@ -39,7 +39,8 @@ func (cli *Client) SignWithFlags(data []byte, flags ckalkan.Flag) (signature []b
 		return nil, "-", err
 	}
 
-	c, err := cli.kc.GetCertificatesList()
+	c, err := cli.kc.X509ExportCertificateFromStore("pkiKey")
+	// c, err := cli.kc.GetCertificatesList()
 	if err != nil {
 		return nil, "-", err
 	}

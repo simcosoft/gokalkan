@@ -35,5 +35,5 @@ func (cli *Client) LoadKeyStoreFromBytes(key []byte, password string) (err error
 		return fmt.Errorf("%w: expected %d bytes, but written %d bytes", ErrLoadKey, exp, written)
 	}
 
-	return cli.kc.LoadKeyStore(password, filename, ckalkan.StoreTypePKCS12, "")
+	return cli.kc.LoadKeyStore(password, filename, ckalkan.StoreTypePKCS12, "pkiKey")
 }
