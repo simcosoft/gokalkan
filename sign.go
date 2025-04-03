@@ -31,6 +31,7 @@ func (cli *Client) Sign(data []byte, isDetached, withTSP bool) (signature []byte
 
 // Sign подписывает данные и возвращает CMS с подписью.
 func (cli *Client) SignWithFlags(data []byte, flags ckalkan.Flag) (signature []byte, crt string, err error) {
+
 	dataB64 := base64.StdEncoding.EncodeToString(data)
 
 	signatureB64, err := cli.kc.SignData("", dataB64, "", flags)
