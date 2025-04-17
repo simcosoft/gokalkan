@@ -29,18 +29,18 @@ func (cli *Client) Sign(data []byte, isDetached, withTSP bool) (signature []byte
 	return base64.StdEncoding.DecodeString(signatureB64)
 }
 
-// Sign подписывает данные и возвращает CMS с подписью.
+// SignWithFlags подписывает данные c  и возвращает подпись.
 func (cli *Client) SignWithFlags(data []byte, flags ckalkan.Flag) (signature []byte, crt string, err error) {
 
 	dataB64 := base64.StdEncoding.EncodeToString(data)
 
-	signatureB64, err := cli.kc.SignData("", dataB64, "", flags)
+	c, err := cli.kc.X509ExportCertificateFromStore("pkiKey")
+	// c, err := cli.kc.GetCertificatesList()
 	if err != nil {
 		return nil, "-", err
 	}
 
-	c, err := cli.kc.X509ExportCertificateFromStore("pkiKey")
-	// c, err := cli.kc.GetCertificatesList()
+	signatureB64, err := cli.kc.SignData("", dataB64, "pkiKey", flags)
 	if err != nil {
 		return nil, "-", err
 	}
