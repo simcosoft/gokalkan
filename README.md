@@ -1,56 +1,108 @@
 # gokalkan
 
-[![pkg-img]][pkg-url]
-[![reportcard-img]][reportcard-url]
+This repository is a fork of [github.com/gokalkan/gokalkan](https://github.com/gokalkan/gokalkan).
 
-<img src="https://user-images.githubusercontent.com/29381624/170255957-56b2c349-c04f-4ec8-9054-78bbe351fcc8.png" width=100>
+The `gokalkan` package is a wrapper around the native methods of the KalkanCrypt library.
 
-Данный репо является форком от github.com/gokalkan/gokalkan
+KalkanCrypt is the primary library for working with digital signature keys from pki.gov.kz.
+It can sign and verify data, extract information, and perform other operations involving
+electronic signatures, digital certificates, and keys.
 
-Пакет `gokalkan` является оберткой над нативными методами библиотеки KalkanCrypt.
+Features of the `gokalkan` package:
 
-KalkanCrypt является основной библиотекой для работы с ЭЦП ключами от pki.gov.kz и
-позволяет подписывать, верифицировать, вытаскивать данные и много чего другого связанного
-с электронными подписями, цифровыми сертификатами и ключами.
+- Multithreading support
+- No dependencies
+- Clean code
+- Calls KalkanCrypt native methods directly
 
-Особенности пакета `gokalkan`:
+## Before You Begin
 
-- Поддержка мультипоточности
-- Без зависимостей
-- Чистый код
-- Напрямую вызывает нативные методы KalkanCrypt
+Some setup is required before using the library:
 
-## Перед использованием
+For Docker deployments, we recommend using a Debian image. Projects using this package have run successfully on Debian, while issues have been encountered with Alpine.
 
-Чтобы использовать библиотеку требуется провести подготовку:
+#### 1. Get the SDK
 
-#### 1. Получить SDK
+Contact [pki.gov.kz](https://pki.gov.kz/developers/) to obtain the SDK. It includes libraries for Java and C.
 
-Обратиться в [pki.gov.kz](https://pki.gov.kz/developers/) чтобы получить SDK. SDK представляет из себя набор библиотек для Java и C.
+#### 2. Install CA certificates
 
-#### 2. Установить CA сертификаты
+The certificates are located in `SDK/C/Linux/ca-certs/Ubuntu`. The directory contains `production` and `test` certificates, along with scripts to install them. Running the scripts requires `sudo` privileges.
 
-Сертификаты лежат по пути `SDK/C/Linux/ca-certs/Ubuntu`. В папке находятся два типа сертификатов - `production` и `test`. Для их установки приготовлены скрипты в той же директории. При запуске понадобятся sudo права.
+#### 3. Copy the .so files
 
-#### 3. Скопировать .so файлы
-
-Файлы лежат в директории `SDK 2.0/C/Linux/C/libs/v2.0.4`. Команда для копирования:
+The files are located in `SDK 2.0/C/Linux/C/libs/v2.0.4`. Copy them with:
 
 ```sh
 sudo cp -f libkalkancryptwr-64.so.2.0.4 /usr/lib/libkalkancryptwr-64.so
 ```
 
-## Установка
+## Installation
 
-Версия Go 1.17+
+Go 1.27 or later
 
 ```sh
-go get github.com/simcosoft/gokalkan
+go get github.com/simcosoft/gokalkan@v1.6.0
 ```
 
-## Загрузка хранилища PKCS12
+## Package Functions
 
-Загрузка хранилища с ключом и сертификатом (например ЭЦП ключ, который начинается с `RSA...`):
+### Creating and configuring a client
+
+| Function | Description |
+| --- | --- |
+| `NewClient(opts ...Option)` | Creates and initializes a KalkanCrypt client with the specified options. |
+| `OptsProd`, `OptsTest` | Preset options for the production and test TSP and OCSP services. Pass one of these to `NewClient`. |
+| `WithLogger(logger Logger)` | Sets the client's logger. |
+| `WithTSP(url string)` | Sets the timestamp service URL. |
+| `WithOCSP(url string)` | Sets the certificate status service URL. |
+| `WithCert(cert, typ)` | Adds a CA or intermediate certificate to the client options. |
+| `WithCerts(certs)` | Sets the list of certificates to be loaded by the client. |
+| `WithRemoteProdCerts(ctx)` | Downloads production PKI certificates and adds them to the client options. |
+| `WithRemoteTestCerts(ctx)` | Downloads test PKI certificates and adds them to the client options. |
+| `(*Client).Options()` | Returns the client's current options. |
+
+### Keys and certificates
+
+| Function | Description |
+| --- | --- |
+| `(*Client).LoadKeyStore(path, password)` | Loads a PKCS#12 keystore from a file. |
+| `(*Client).LoadKeyStoreFromBytes(key, password)` | Loads a PKCS#12 keystore from bytes. |
+| `(*Client).LoadCerts()` | Loads the certificates configured when the client was created. |
+| `(*Client).LoadCertFromBytes(cert, certType)` | Loads a certificate from bytes, such as a CA or intermediate certificate. |
+| `(*Client).GetCertFromCMS(cms, signID)` | Extracts a signer's certificate from a CMS signature. `signID` specifies the signer index. |
+| `(*Client).GetCertFromXML(xml, signID)` | Extracts a signer's certificate from an XML signature. |
+| `(*Client).ValidateCert(cert)` | Validates a certificate without making an OCSP request. |
+| `(*Client).ValidateCertOCSP(cert, url...)` | Checks a certificate's status using OCSP. An optional service URL can be provided. |
+| `(*Client).X509CertificateGetInfo(cert, prop)` | Returns the selected certificate field. The certificate must be in PEM format. |
+| `(*Client).X509CertificateGetSummary(cert)` | Returns structured certificate information, including subject and issuer details, validity period, and serial number. If inspecting a certificate from a signature, call `Verify` first. |
+
+### Signing and verification
+
+| Function | Description |
+| --- | --- |
+| `(*Client).Sign(data, isDetached, withTSP)` | Creates a CMS signature. The parameters control whether the signature is detached and whether to include a timestamp. |
+| `(*Client).SignWithFlags(data, flags)` | Signs data with the specified KalkanCrypt flags and returns the key certificate. Uses the `pkiKey` key from the loaded keystore. |
+| `(*Client).SignXML(xml)` | Signs an XML document. |
+| `(*Client).SignWSSE(xml, id)` | Signs XML using WS-Security, placing it in the SOAP Body with the specified ID. |
+| `WrapWithWSSESoapEnvelope(xml, id)` | Wraps an XML document in a SOAP Envelope and Body with a WS-Security ID. |
+| `(*Client).Verify(signature)` | Verifies a CMS signature and returns the result information. |
+| `(*Client).VerifyDetached(signature, data)` | Verifies a detached CMS signature against the provided data. |
+| `(*Client).VerifyXML(signedXML)` | Verifies an XML signature and returns the result information. |
+
+### Hashing and utility methods
+
+| Function | Description |
+| --- | --- |
+| `(*Client).HashSHA256(data)` | Computes the SHA-256 hash of the data. |
+| `(*Client).HashGOST95(data)` | Computes the hash using GOST 34.11-95. |
+| `(*Client).GetTimeFromSig(signature, signID)` | Gets the signing time for the specified signer. |
+| `(*Client).Underlying()` | Returns the underlying `ckalkan` client for direct access to KalkanCrypt methods. |
+| `(*Client).Close()` | Releases the client's resources. Call this when finished. |
+
+## Loading a PKCS#12 Keystore
+
+Load a keystore containing a key and certificate (for example, an e-signature key whose name starts with `RSA...`):
 
 ```go
 package main
@@ -63,27 +115,27 @@ import (
 )
 
 var (
-	certPath = "test_cert/GOSTKNCA.p12" // путь к хранилищу
+	certPath = "test_cert/GOSTKNCA.p12" // path to the keystore
 
-	certPassword = "Qwerty12" // пароль
-	// P.S. никогда не храните пароли в коде
+	certPassword = "Qwerty12" // password
+	// Never store passwords in source code.
 )
 
 func main() {
-	// для теста
+	// For testing
 	opts := gokalkan.OptsTest
 
-	// для прода
+	// For production
 	// opts := gokalkan.OptsProd
 
 	cli, err := gokalkan.NewClient(opts...)
 	if err != nil {
 		log.Fatal("new kalkan client create error", err)
 	}
-	// Обязательно закрывайте клиент, иначе приведет к утечкам ресурсов
+	// Always close the client to avoid resource leaks.
 	defer cli.Close()
 
-	// Подгружаем хранилище с паролем
+	// Load the keystore with its password.
 	err = cli.LoadKeyStore(certPath, certPassword)
 	if err != nil {
 		log.Fatal("load key store error", err)
@@ -91,81 +143,73 @@ func main() {
 }
 ```
 
-Следует отметить, что при инициализации gokalkan клиента нужно указывать опцию.
-Есть две опции - `OptsTest` и `OptsProd`. Нужно выбрать одну из них в зависимости от окружения.
+When initializing a `gokalkan` client, pass an option. The package provides `OptsTest` and `OptsProd`; choose one based on your environment.
 
-### Подпись XML документа
+### Signing an XML document
 
-Для того чтобы подписать XML документ, нужно передать документ в виде строки:
+To sign an XML document, pass it as a string:
 
 ```go
 signedXML, err := cli.SignXML("<root>GoKalkan</root>")
 
-fmt.Println("Подписанный XML", signedXML)
-fmt.Println("Ошибка", err)
+fmt.Println("Signed XML:", signedXML)
+fmt.Println("Error:", err)
 ```
 
-### Проверка подписи на XML документе
+### Verifying an XML signature
 
-Проверка подписи документа вернет ошибку, если документ подписан неверно либо срок
-у сертификата с которым подписан истёк.
+Verification returns an error if the document has an invalid signature or the signing certificate has expired.
 
 ```go
 serial, err := cli.VerifyXML(signedXML)
 
-fmt.Println("Серийный номер", serial)
-fmt.Println("Ошибка", err)
+fmt.Println("Serial number:", serial)
+fmt.Println("Error:", err)
 ```
 
-### Подпись XML документа для SmartBridge
+### Signing an XML document for SmartBridge
 
-Для того чтобы подписать XML документ в формате SignWSSE, нужно передать документ в виде строки
-и id для SOAP Body. Функция обернет документ в `soap:Envelope` и запишет внутри `soap:Body`.
+To sign an XML document in WS-Security format, pass the document as a string and provide an ID for the SOAP Body. The function wraps the document in a `soap:Envelope` and places it inside the `soap:Body`.
 
 ```go
 signedXML, err := cli.SignWSSE("<root>gokalkan</root>", "12345")
 
-fmt.Println("Подписанный XML в формате WSSE", signedXML)
-fmt.Println("Ошибка", err)
+fmt.Println("WS-Security signed XML:", signedXML)
+fmt.Println("Error:", err)
 ```
 
-### Получение времени когда был подписан документ 2 подписантом
+### Getting the signing time for the second signer
 
 ```go
 signTime, err := c.GetTimeFromSig(cmsFileBody, 1)
 
-fmt.Println("Время подписи", signTime)
-fmt.Println("Ошибка", err)
+fmt.Println("Signing time:", signTime)
+fmt.Println("Error:", err)
 ```
 
-### Получение значение поля из сертификата
-Внимание! Сертификат должен быть в формате PEM.
+### Getting a field from a certificate
+The certificate must be in PEM format.
 
 ```go
 value, err := c.X509CertificateGetInfo(certBody, ckalkan.CertPropSubjectCommonName)
 
-fmt.Println("Значение", value)
-fmt.Println("Ошибка", err)
+fmt.Println("Value:", value)
+fmt.Println("Error:", err)
 ```
 
-### Получение сводной информации о сертификате
-Внимание! Сертификат должен быть в формате PEM.
+### Getting a certificate summary
+The certificate must be in PEM format.
 
 ```go
 info, err := c.X509CertificateGetSummary(certBody)
 
-fmt.Println("Информация", info)
-fmt.Println("Ошибка", err)
+fmt.Println("Information:", info)
+fmt.Println("Error:", err)
 ```
 
 
-## Лицензия
+## License
 
 The MIT License (MIT) 2021 - [Abylaikhan Zulbukharov](https://github.com/Zulbukharov).
 
 Please have a look at the [LICENSE.md](https://github.com/Zulbukharov/kalkancrypt-wrapper/blob/master/LICENSE.md) for more details.
-
-[pkg-img]: https://pkg.go.dev/badge/Zulbukharov/GoKalkan
-[pkg-url]: https://pkg.go.dev/github.com/gokalkan/gokalkan
-[reportcard-img]: https://goreportcard.com/badge/Zulbukharov/GoKalkan
-[reportcard-url]: https://goreportcard.com/report/Zulbukharov/GoKalkan
