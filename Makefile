@@ -10,7 +10,7 @@ fmtimport:
 .PHONY: test
 test:
 	@go clean -testcache
-	@go test -v -run . ./internal/testdata/test/
+	@go test ./... ./internal/testdata/test/ ./internal/testdata/wtest/
 
 .PHONY: wtest
 wtest:

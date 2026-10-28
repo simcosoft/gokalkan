@@ -176,7 +176,7 @@ func (cli *Client) X509CertificateGetSummary(cert string) (*Summary, error) {
 	); err != nil {
 		return nil, err
 	} else if part := strings.Split(notAfter, "="); len(part) == 2 {
-		if summary.NotAfter, err = time.Parse(timeLayout, part[1]); err != nil {
+		if summary.NotAfter, err = parseCertificateTime(part[1]); err != nil {
 			return nil, err
 		}
 	}
@@ -187,12 +187,24 @@ func (cli *Client) X509CertificateGetSummary(cert string) (*Summary, error) {
 	); err != nil {
 		return nil, err
 	} else if part := strings.Split(notBefore, "="); len(part) == 2 {
-		if summary.NotBefore, err = time.Parse(timeLayout, part[1]); err != nil {
+		if summary.NotBefore, err = parseCertificateTime(part[1]); err != nil {
 			return nil, err
 		}
 	}
 
 	return &summary, nil
+}
+
+func parseCertificateTime(value string) (time.Time, error) {
+	parsed, err := time.Parse(timeLayout, value)
+	if err == nil {
+		return parsed, nil
+	}
+	if strings.HasSuffix(value, " ALMT") {
+		value = strings.TrimSuffix(value, " ALMT") + " +05:00"
+		return time.Parse(timeLayout, value)
+	}
+	return time.Time{}, err
 }
 
 func extractValueInBrackets(entry string) (string, bool) {

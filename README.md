@@ -207,6 +207,18 @@ fmt.Println("Information:", info)
 fmt.Println("Error:", err)
 ```
 
+## Tests
+
+Run all unit and integration tests with:
+
+```sh
+make test
+```
+
+The integration tests use the KalkanCrypt native library and test PKCS#12 fixtures. They also contact the test PKI OCSP service, so the native library must be installed and network access to the test PKI is required. The test packages are under directories named `testdata`, which `go test ./...` skips; use `make test` to run them.
+
+To run only the wrapper integration tests, use `make wtest`.
+
 
 ## License
 
