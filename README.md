@@ -159,64 +159,6 @@ fmt.Println("Ошибка", err)
 ```
 
 
-## Бенчмарки
-
-Команда запуска бенчмарка:
-
-```sh
-go test -bench SignXML -run=^$ -benchmem
-```
-
-Характеристики хост машины:
-
-- goos: linux
-- goarch: amd64
-- cpu: Intel(R) Core(TM) i5-8500 CPU @ 3.00GHz
-
-| Бенчмарк           | Кол-во циклов | Средн. время выполнения | Средн. потребление ОЗУ | Средн. кол-во аллокаций |
-| ------------------ | ------------- | ----------------------- | ---------------------- | ----------------------- |
-| BenchmarkSignXML-6 | 2809          | 422310 ns/op            | 2792 B/op              | 8 allocs/op             |
-
-## Контрибьютеры ✨
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-
-<table>
-	<tr>
-		<td align="center">
-			<a href="https://github.com/Zulbukharov">
-				<img src="https://avatars.githubusercontent.com/u/25000090?v=4" width="100px;" alt=""/>
-			</a><br />
-			<a href="https://github.com/gokalkan/gokalkan/commits?author=Zulbukharov" title="Code">
-				<sub><b>Zulbukharov Abylaikhan</b></sub>
-			</a>
-		</td>
-		<td align="center">
-			<a href="https://github.com/atlekbai">
-				<img src="https://avatars.githubusercontent.com/u/29381624?v=4&s=100" width="100px;" alt=""/>
-			</a><br />
-			<a href="https://github.com/gokalkan/gokalkan/commits?author=atlekbai" title="Code">
-				<sub><b>Tlekbai Ali</b></sub>
-			</a>
-		</td>
-		<td align="center">
-			<a href="https://github.com/gammban">
-				<img src="https://avatars.githubusercontent.com/u/98373125?v=4&s=100" width="100px;" alt=""/>
-			</a><br />
-			<a href="https://github.com/gokalkan/gokalkan/commits?author=gammban" title="Code">
-				<sub><b>Kilibayev Azat</b></sub>
-			</a>
-		</td>
-	</tr>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
 ## Лицензия
 
 The MIT License (MIT) 2021 - [Abylaikhan Zulbukharov](https://github.com/Zulbukharov).

@@ -33,6 +33,7 @@ func (cli *Client) Sign(data []byte, isDetached, withTSP bool) (signature []byte
 func (cli *Client) SignWithFlags(data []byte, flags ckalkan.Flag) (signature []byte, crt string, err error) {
 
 	// dataB64 := base64.StdEncoding.EncodeToString(data)
+	//
 
 	c, err := cli.kc.X509ExportCertificateFromStore("pkiKey")
 	// c, err := cli.kc.GetCertificatesList()
