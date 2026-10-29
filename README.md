@@ -42,7 +42,7 @@ sudo cp -f libkalkancryptwr-64.so.2.0.4 /usr/lib/libkalkancryptwr-64.so
 Go 1.27 or later
 
 ```sh
-go get github.com/simcosoft/gokalkan@v1.6.0
+go get github.com/simcosoft/gokalkan
 ```
 
 ## Package Functions
